@@ -4,23 +4,45 @@
   import { getHorarios } from '$lib/utils/sheets';
   import { filtrarPorZonaDestino, filtrarPorHora } from '$lib/utils/filtros';
   import Loader from '$lib/components/Loader.svelte';
+  import FiltroHora from '$lib/components/FiltroHora.svelte';
 
   let horarios = [];
   let cargando = true;
   let destino, zona;
+  let horaFiltro = '';
 
   $: query = $page.url.searchParams;
   $: destino = query.get('destino');
   $: zona = query.get('zona');
 
-  onMount(async () => {
+  async function cargarHorarios(hora) {
+    cargando = true;
+    console.log('Cargando horarios con:', { destino, zona, hora });
     const data = await getHorarios();
-    const filtrados = filtrarPorZonaDestino(data, zona, destino);
-    const horaActual = new Date().toTimeString().slice(0,5);
-    horarios = filtrarPorHora(filtrados, horaActual);
+    console.log('Datos totales:', data);
+    let filtrados = filtrarPorZonaDestino(data, zona, destino);
+    console.log('Filtrados por destino y zona:', filtrados);
+
+    if (!hora) {
+      hora = new Date().toTimeString().slice(0, 5);
+    }
+    horarios = filtrarPorHora(filtrados, hora);
+    console.log('Filtrados por hora:', horarios);
     cargando = false;
+  }
+
+  onMount(() => {
+    cargarHorarios(horaFiltro);
   });
+
+  function manejarFiltro(event) {
+    horaFiltro = event.detail.hora;
+    console.log('Filtro cambiado:', horaFiltro);
+    cargarHorarios(horaFiltro);
+  }
 </script>
+
+<FiltroHora {destino} {zona} on:filtrar={manejarFiltro} />
 
 {#if cargando}
   <Loader mensaje="Cargando horarios..." />
