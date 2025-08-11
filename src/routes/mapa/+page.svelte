@@ -35,7 +35,19 @@
   ];
 </script>
 
-<div class="p-6">
+<div class="p-6 max-w-md mx-auto">
+  <!-- Imagen y título arriba -->
+  <div class="flex flex-col items-center mb-6">
+    <img
+      src="Frame 22.png"
+      alt="Mapa de zonas del trayecto"
+      class="w-full max-w-xs rounded-md shadow-md mb-4"
+    />
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+      Zonas del trayecto
+    </h1>
+  </div>
+
   <h2 class="text-xl mb-6 font-semibold text-center text-gray-800 dark:text-gray-100">
     Destino: <span class="text-primary capitalize">{destino}</span>
   </h2>
@@ -45,7 +57,8 @@
   {:else if zonas.length === 0}
     <p class="text-center text-red-500 font-semibold">No se encontraron zonas para este destino.</p>
   {:else}
-    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-md mx-auto">
+  
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
       {#each zonas as zona, i}
         <button
           class={`text-white font-semibold py-3 rounded-lg shadow-lg transition-transform transform active:scale-95 ${colores[i % colores.length]}`}
